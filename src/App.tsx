@@ -97,9 +97,6 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
-      <div className="header-bar-top">
-        <p className="promo-text">Aproveite essa novidade exclusiva para as alunas!</p>
-      </div>
       <header className="App-header-top">
         <div className="header-left">
           <button 
@@ -110,21 +107,23 @@ const App: React.FC = () => {
             <span></span>
             <span></span>
           </button>
+          <h1 style={{
+            color: '#527a94',
+            fontSize: '28px',
+            fontWeight: 'bold',
+            fontStyle: 'italic',
+            margin: '0',
+            marginLeft: '15px',
+            fontFamily: 'serif'
+          }}>Depois do Enxoval</h1>
         </div>
-        <img src="/images/logo.png" alt="Enxoval Inteligente" className="header-logo" />
-        <div className="social-icons">
-          <a href="https://youtube.com" target="_blank" rel="noopener noreferrer">
-            <img src="/images/youtube.png" alt="YouTube" className="social-icon" />
-          </a>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-            <img src="/images/instagram.png" alt="Instagram" className="social-icon" />
-          </a>
-          <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer">
-            <img src="/images/tiktok.png" alt="TikTok" className="social-icon" />
-          </a>
+        <div className="header-search">
+          <SearchBar onSearch={handleSearch} />
         </div>
       </header>
-      <div className="header-bar-bottom">
+      {/* Menu de categorias - apenas quando houver busca ativa */}
+      {hasSearched && (
+        <div className="header-bar-bottom">
         <div className="categories-nav desktop-nav">
           <button 
             className={`category-btn ${!selectedCategory ? 'active' : ''}`}
@@ -215,11 +214,12 @@ const App: React.FC = () => {
             );
           })}
         </div>
-      </div>
-
+        </div>
+      )}
       
-      {/* Mobile Menu Overlay */}
-      <div className={`mobile-menu-overlay ${isMobileMenuOpen ? 'active' : ''}`}>
+      {/* Mobile Menu Overlay - apenas quando houver busca ativa */}
+      {hasSearched && (
+        <div className={`mobile-menu-overlay ${isMobileMenuOpen ? 'active' : ''}`}>
         <div className="mobile-menu">
           <button 
             className={`mobile-menu-item ${!selectedCategory ? 'active' : ''}`}
@@ -313,39 +313,67 @@ const App: React.FC = () => {
             );
           })}
         </div>
-      </div>
+        </div>
+      )}
       <main className="App-main">
-        <div className="search-container">
-          <SearchBar onSearch={handleSearch} />
-          
-          <div className="filter-container">
-            <div className="filter-item">
-              <label htmlFor="brand-filter">Marca:</label>
-              <select 
-                id="brand-filter" 
-                value={selectedBrand} 
-                onChange={(e) => {
-                  const newBrand = e.target.value;
-                  setSelectedBrand(newBrand);
-                  handleSearch(document.querySelector<HTMLInputElement>('.search-input')?.value || '', newBrand);
+        {/* Mostrar conteúdo inicial apenas quando não há busca */}
+        {!hasSearched && (
+          <>
+            <div className="age-group-container">
+              <div className="age-group-content">
+            <p>Veja os produtos por faixa etária</p>
+            <div className="age-buttons-container">
+              <button 
+                className="age-button"
+                onClick={() => {
+                  handleSearch('6 a 12 meses');
                 }}
               >
-                <option value="">Todas as marcas</option>
-                {brandOptions.map(brand => (
-                  <option key={brand} value={brand}>{brand}</option>
-                ))}
-              </select>
+                6 a 12 meses
+              </button>
+              <button 
+                className="age-button"
+                onClick={() => {
+                  handleSearch('1 a 2 anos');
+                }}
+              >
+                1 a 2 anos
+              </button>
+              <button 
+                className="age-button"
+                onClick={() => {
+                  handleSearch('2+ anos');
+                }}
+              >
+                2+ anos
+              </button>
+            </div>
+          </div>
+          <div className="age-group-image">
+            <img src="https://enxovalinteligente.com.br/wp-content/uploads/2026/02/Elisa_ensaiofamilia_017-1-1-1-1.jpg" alt="Elisa" />
+            </div>
             </div>
             
-            <div className="filter-item">
-              <label htmlFor="category-filter">Categoria:</label>
-              <select 
-                id="category-filter" 
-                value={selectedCategory} 
-                onChange={(e) => {
-                  const newCategory = e.target.value;
+            <div className="categories-section">
+          <p className="categories-intro-text">Pule direto para uma das categorias</p>
+          <div className="categories-container">
+          <div className="categories-scroll">
+            {[
+              { name: 'Vestuário', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2025/08/roupa_2.jpg' },
+              { name: 'Higiene', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2026/01/Sabonete-liquido.jpg' }, 
+              { name: 'Viagem', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2025/12/zap_aviao.jpg' },
+              { name: 'Passeio', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2025/09/cadeirinha_maxicosi.jpg' },
+              { name: 'Alimentação', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2025/08/batalha-cadeiras.jpg' },
+              { name: 'Diversão', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2025/11/disney.jpg' },
+              { name: 'Quarto', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2025/08/quarto-dos-meninos.jpg' },
+              { name: 'Escola', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2025/08/mochila-felipe.jpg' }
+            ].map((categoryData, index) => (
+              <div 
+                key={categoryData.name}
+                className={`category-card ${selectedCategory === categoryData.name ? 'active' : ''}`}
+                onClick={() => {
+                  const newCategory = categoryData.name === selectedCategory ? '' : categoryData.name;
                   setSelectedCategory(newCategory);
-                  // Build subcategory options when category filter changes
                   const newSubcategories = newCategory
                     ? Array.from(new Set(allProducts
                         .filter(p => p.category === newCategory)
@@ -355,56 +383,36 @@ const App: React.FC = () => {
                     : [];
                   setSubcategoryOptions(newSubcategories);
                   setSelectedSubcategory('');
-                  handleSearch(document.querySelector<HTMLInputElement>('.search-input')?.value || '', undefined, newCategory);
+                  handleSearch(document.querySelector<HTMLInputElement>('.search-input')?.value || '', undefined, newCategory, '');
                 }}
               >
-                <option value="">Todas as categorias</option>
-                {categoryOptions.map(category => (
-                  <option key={category} value={category}>{category}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="filter-item">
-              <label htmlFor="subcategory-filter">Subcategoria:</label>
-              <select
-                id="subcategory-filter"
-                value={selectedSubcategory}
-                onChange={(e) => {
-                  const newSub = e.target.value;
-                  setSelectedSubcategory(newSub);
-                  handleSearch(document.querySelector<HTMLInputElement>('.search-input')?.value || '', undefined, selectedCategory, newSub);
-                }}
-                disabled={!selectedCategory || subcategoryOptions.length === 0}
-              >
-                <option value="">Todas as subcategorias</option>
-                {subcategoryOptions.map(sub => (
-                  <option key={sub} value={sub}>{sub}</option>
-                ))}
-              </select>
-            </div>
+                {categoryData.image ? (
+                  <img src={categoryData.image} alt={categoryData.name} />
+                ) : (
+                  <div className="category-image-placeholder">
+                    <span>📷</span>
+                  </div>
+                )}
+                <span className="category-name">{categoryData.name}</span>
+              </div>
+            ))}
           </div>
-        </div>
-        
-        <div className="brands-container">
-          <button 
-            className="scroll-arrow scroll-arrow-left"
-            onClick={() => {
-              const container = document.querySelector('.brands-scroll');
-              if (container) container.scrollBy({ left: -300, behavior: 'smooth' });
-            }}
-          >
-            &#8249;
-          </button>
+            </div>
+            </div>
+            
+            <div className="brands-container">
           <div className="brands-scroll">
             {brandOptions.map((brand, index) => (
               <div 
                 key={brand}
                 className={`brand-card ${selectedBrand === brand ? 'active' : ''}`}
                 style={{
-                  backgroundColor: index % 4 === 0 ? '#8fbc8f' : 
-                                 index % 4 === 1 ? '#638ca6' : 
-                                 index % 4 === 2 ? '#e67e40' : '#f4a792'
+                  borderColor: index % 4 === 0 ? '#6b8e6b' : 
+                              index % 4 === 1 ? '#4a6b82' : 
+                              index % 4 === 2 ? '#c55a20' : '#d66b72',
+                  color: index % 4 === 0 ? '#6b8e6b' : 
+                         index % 4 === 1 ? '#4a6b82' : 
+                         index % 4 === 2 ? '#c55a20' : '#d66b72'
                 }}
                 onClick={() => {
                   const newBrand = brand === selectedBrand ? '' : brand;
@@ -416,16 +424,9 @@ const App: React.FC = () => {
               </div>
             ))}
           </div>
-          <button 
-            className="scroll-arrow scroll-arrow-right"
-            onClick={() => {
-              const container = document.querySelector('.brands-scroll');
-              if (container) container.scrollBy({ left: 300, behavior: 'smooth' });
-            }}
-          >
-            &#8250;
-          </button>
-        </div>
+            </div>
+          </>
+        )}
         
         {isLoading ? (
           <div className="loading">

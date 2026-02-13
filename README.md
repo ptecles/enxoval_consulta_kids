@@ -1,11 +1,11 @@
-# Busca Produtos para Bebê
+# Busca Produtos Kids
 
-Uma aplicação React TypeScript para busca de produtos para bebê com autenticação integrada ao Hotmart via Make.com.
+Uma aplicação React TypeScript para busca de produtos infantis com autenticação integrada ao Hotmart via Make.com.
 
 ## Funcionalidades
 
 - Login com email de comprador Hotmart
-- Busca de produtos por texto
+- Busca de produtos infantis por texto
 - Filtros por marca e categoria
 - Links diretos para os produtos
 - Interface responsiva e amigável

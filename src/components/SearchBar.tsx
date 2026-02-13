@@ -29,7 +29,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
             className="search-input"
           />
           <button type="submit" className="search-button">
-            Buscar
+            <img src="/images/lupa2.svg" alt="Buscar" className="search-icon" />
           </button>
         </div>
       </form>

@@ -1,36 +1,41 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f5f1eb;
+  background-color: white;
   font-size: 18px;
+  font-weight: 400;
 }
 
 .App {
   text-align: center;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   min-height: 100vh;
   position: relative;
-  background-color: #f5f1eb;
+  background-color: white;
 }
 
 .App-header-top {
   background-color: white;
-  padding: 20px;
+  padding: 20px 40px;
   color: white;
   text-align: center;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  position: relative;
+  gap: 20px;
 }
 
 .header-left {
-  width: 120px;
+  position: absolute;
+  left: 20px;
   display: flex;
   align-items: center;
+  z-index: 10;
 }
 
 .mobile-menu-toggle {
@@ -105,6 +110,7 @@ body {
   cursor: pointer;
   border-radius: 10px;
   transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
   font-weight: 500;
   margin-bottom: 5px;
 }
@@ -187,6 +193,7 @@ body {
   cursor: pointer;
   border-radius: 6px;
   transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
   font-weight: 400;
   margin-bottom: 2px;
   display: block;
@@ -227,6 +234,7 @@ body {
   display: flex;
   gap: 15px;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .social-icon {
@@ -245,26 +253,69 @@ body {
   margin: 0;
   font-size: 1.8rem;
   color: white;
-  font-family: 'Georgia', 'Times New Roman', serif;
-  font-weight: 400;
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
   letter-spacing: 0.5px;
 }
 
-.header-logo {
-  height: 55px;
-  width: auto;
-  object-fit: contain;
-  margin: -12px 0;
+.header-title {
+  color: #527a94;
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+  margin-left: 15px;
+  display: block !important;
+  position: relative !important;
+  z-index: 100 !important;
 }
 
-.header-bar-top {
-  background-color: #f4a792;
-  height: 25px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 20px;
+.header-search {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 200px;
 }
+
+.header-search .search-bar {
+  margin: 0;
+  background: #f8f9fa;
+  border-radius: 25px;
+  border: 2px solid #e8dbcf;
+  transition: all 0.3s ease;
+}
+
+.header-search .search-bar:focus-within {
+  border-color: #638ca6;
+  box-shadow: 0 0 0 3px rgba(99, 140, 166, 0.1);
+}
+
+.header-search .search-input {
+  border: none;
+  background: transparent;
+  padding: 12px 20px;
+  font-size: 16px;
+  width: 100%;
+  outline: none;
+  font-family: 'Inter', sans-serif;
+}
+
+.header-search .search-button {
+  background: #638ca6;
+  border: none;
+  border-radius: 0 23px 23px 0;
+  padding: 12px 20px;
+  color: white;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.header-search .search-button:hover {
+  background: #527a94;
+}
+
 
 .header-bar-middle {
   background-color: white;
@@ -275,21 +326,9 @@ body {
   padding: 0 40px;
 }
 
-.promo-text {
-  color: white;
-  margin: 0;
-  font-family: 'Georgia', 'Times New Roman', serif;
-  font-weight: 300;
-  font-size: 14px;
-  text-align: center;
-  letter-spacing: 0.5px;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  padding: 8px;
-  line-height: 1.2;
-}
 
 .header-bar-bottom {
-  background-color: #e8dbcf;
+  background-color: white;
   height: 50px;
   display: flex;
   align-items: center;
@@ -308,8 +347,8 @@ body {
   background: none;
   border: none;
   color: #e67e40;
-  font-family: 'Georgia', 'Times New Roman', serif;
-  font-weight: 300;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
   font-size: 18px;
   padding: 12px 20px;
   margin: 0 8px;
@@ -367,6 +406,111 @@ body {
   min-height: calc(100vh - 200px);
 }
 
+.age-group-container {
+  background-color: #f8d5da;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 1400px;
+  margin: 0 auto;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  min-height: 200px;
+}
+
+.age-group-content {
+  flex: 1;
+  text-align: center;
+  max-width: calc(100% - 420px);
+  z-index: 2;
+  position: relative;
+}
+
+.age-group-container p {
+  color: black;
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 400;
+  font-style: italic;
+  margin: 0 0 20px 0;
+  letter-spacing: 0.5px;
+}
+
+.age-buttons-container {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.age-button {
+  background-color: black;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.age-button:hover {
+  background-color: #333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.age-group-image {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 400px;
+  overflow: hidden;
+  border-radius: 0 15px 15px 0;
+}
+
+.age-group-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0 15px 15px 0;
+}
+
+@media (max-width: 768px) {
+  .age-group-container {
+    flex-direction: column;
+    text-align: center;
+    min-height: 180px;
+  }
+  
+  .age-group-content {
+    max-width: 100%;
+    padding-right: 0;
+    z-index: 2;
+  }
+  
+  .age-group-image {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 280px;
+    border-radius: 0 15px 15px 0;
+  }
+  
+  .age-group-content {
+    max-width: calc(100% - 300px);
+  }
+}
+
 .search-container {
   background-color: white;
   padding: 40px;
@@ -377,6 +521,29 @@ body {
   margin: 20px;
 }
 
+.categories-section {
+  max-width: 1400px;
+  margin: 30px auto;
+  padding: 0 30px;
+}
+
+.categories-intro-text {
+  color: black;
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0 0 20px 0;
+  text-align: left;
+}
+
+.categories-container {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
 .brands-container {
   margin: 30px 0;
   padding: 0 30px;
@@ -385,6 +552,54 @@ body {
   display: flex;
   align-items: center;
   gap: 20px;
+}
+
+.brands-scroll {
+  display: flex;
+  gap: 25px;
+  overflow-x: auto;
+  padding: 20px 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.brands-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.brand-card {
+  min-width: 150px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+  background-color: white;
+  border: 2px solid;
+}
+
+.brand-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.brand-card.active {
+  transform: scale(1.05);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+}
+
+.brand-name {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  font-size: 20px;
+  text-align: center;
+  letter-spacing: 0.3px;
+  padding: 12px;
+  line-height: 1.2;
 }
 
 .scroll-arrow {
@@ -411,66 +626,77 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.brands-scroll {
+.categories-scroll {
   display: flex;
   gap: 25px;
   overflow-x: auto;
   padding: 20px 0;
-  scrollbar-width: thin;
-  scrollbar-color: #f2b88a transparent;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-.brands-scroll::-webkit-scrollbar {
-  height: 8px;
+.categories-scroll::-webkit-scrollbar {
+  display: none;
 }
 
-.brands-scroll::-webkit-scrollbar-track {
-  background: rgba(242, 184, 138, 0.2);
-  border-radius: 4px;
+.category-card {
+  min-width: 180px;
+  height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  position: relative;
+  gap: 10px;
 }
 
-.brands-scroll::-webkit-scrollbar-thumb {
-  background: #f2b88a;
-  border-radius: 4px;
+.category-card:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
 }
 
-.brands-scroll::-webkit-scrollbar-thumb:hover {
-  background: #e67e40;
+.category-card.active {
+  transform: scale(1.08);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
 }
 
-.brand-card {
-  min-width: 150px;
-  height: 100px;
+.category-image-placeholder {
+  width: 180px;
+  height: 180px;
+  background-color: #f8f9fa;
+  border-radius: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 18px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  font-size: 48px;
+  border: 2px solid #e9ecef;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  flex-shrink: 0;
 }
 
-.brand-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+.category-card img {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.brand-card.active {
-  transform: scale(1.05);
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
-}
-
-.brand-name {
-  color: white;
-  font-family: 'Georgia', 'Times New Roman', serif;
-  font-weight: 400;
-  font-size: 20px;
+.category-name {
+  color: black;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
   text-align: center;
-  letter-spacing: 0.5px;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  padding: 12px;
+  letter-spacing: 0.2px;
   line-height: 1.2;
+  margin: 0;
+  padding: 0;
 }
 
 .filter-container {
@@ -492,6 +718,7 @@ body {
 .filter-item label {
   display: block;
   margin-bottom: 8px;
+  font-family: 'Inter', sans-serif;
   font-weight: 500;
   color: #333;
   font-size: 14px;
@@ -502,6 +729,7 @@ body {
   border: 2px solid #ddd;
   border-radius: 8px;
   background-color: white;
+  font-family: 'Inter', sans-serif;
   font-size: 14px;
   min-width: 180px;
   cursor: pointer;
@@ -578,6 +806,7 @@ body {
 }
 
 .product-name {
+  font-family: 'Inter', sans-serif;
   font-size: 20px;
   font-weight: 600;
   margin-bottom: 12px;
@@ -586,6 +815,7 @@ body {
 }
 
 .product-category {
+  font-family: 'Inter', sans-serif;
   font-size: 14px;
   color: #6a6a6a;
   margin-top: 5px;
@@ -593,6 +823,7 @@ body {
 }
 
 .product-price {
+  font-family: 'Inter', sans-serif;
   font-weight: bold;
   color: #d98c73;
   font-size: 18px;
@@ -615,6 +846,7 @@ body {
   padding: 12px 24px;
   text-decoration: none;
   border-radius: 6px;
+  font-family: 'Inter', sans-serif;
   font-weight: 500;
   cursor: pointer;
   border: none;
@@ -701,7 +933,7 @@ body {
 
 /* Footer Styles - Similar to enxoval_shop */
 .footer {
-  background-color: #f5f1eb;
+  background-color: white;
   padding: 30px 20px;
   margin-top: 50px;
   border-top: 1px solid #f2b88a;
@@ -769,15 +1001,31 @@ body {
   /* Mobile header improvements */
   .App-header-top {
     padding: 15px 20px;
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
   }
   
-  .header-logo {
-    height: 45px;
+  .header-left {
+    position: static;
+    left: auto;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
   }
   
-  .social-icon {
-    width: 28px;
-    height: 28px;
+  .header-title {
+    position: static;
+    left: auto;
+    font-size: 20px;
+    margin: 0;
+  }
+  
+  .header-search {
+    width: 100%;
+    max-width: none;
+    padding: 0;
+    margin: 0;
   }
   
   /* Mobile search container */

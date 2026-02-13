@@ -1,7 +1,7 @@
 {
-  "name": "busca-produtos-server",
+  "name": "busca-produtos-kids-server",
   "version": "1.0.0",
-  "description": "Backend server for Baby Products Search with Hotmart authentication",
+  "description": "Backend server for Kids Products Search with Hotmart authentication",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

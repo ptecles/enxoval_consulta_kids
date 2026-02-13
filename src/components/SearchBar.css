@@ -3,6 +3,15 @@
   text-align: center;
 }
 
+/* Header-specific styling */
+.header-search .search-bar-content {
+  text-align: left;
+}
+
+.header-search .search-title {
+  display: none;
+}
+
 .search-title {
   margin-bottom: 30px;
 }
@@ -35,8 +44,21 @@
   display: flex;
   width: 100%;
   border-radius: 20px;
-  border: 3px solid #ddd;
+  border: 2px solid #000;
+  background: white;
   overflow: hidden;
+}
+
+.header-search .search-input-container {
+  border-radius: 25px;
+  border: 2px solid #000;
+  background: white;
+  transition: all 0.3s ease;
+}
+
+.header-search .search-input-container:focus-within {
+  border-color: #638ca6;
+  box-shadow: 0 0 0 3px rgba(99, 140, 166, 0.1);
 }
 
 .search-input {
@@ -50,6 +72,14 @@
   color: #333;
 }
 
+.header-search .search-input {
+  padding: 12px 20px;
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  background: transparent;
+}
+
 .search-input::placeholder {
   color: #999;
   font-family: 'Georgia', 'Times New Roman', serif;
@@ -58,22 +88,49 @@
   font-size: 18px;
 }
 
+.header-search .search-input::placeholder {
+  color: #999;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 16px;
+}
+
 .search-button {
-  background-color: #638ca6;
+  background: transparent;
   color: white;
   border: none;
-  padding: 0 25px;
+  padding: 2px 4px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 20px;
   font-family: 'Georgia', 'Times New Roman', serif;
   font-weight: 300;
-  transition: background-color 0.2s ease;
-  min-width: 80px;
+  transition: opacity 0.2s ease;
+  min-width: auto;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-icon {
+  width: 45px;
+  height: 45px;
+  display: block;
+}
+
+.header-search .search-button {
+  padding: 2px 4px;
+  border-radius: 0;
+  background: transparent;
 }
 
 .search-button:hover {
-  background-color: #527a94;
+  opacity: 0.7;
+}
+
+.header-search .search-button:hover {
+  opacity: 0.7;
 }
 
 /* Mobile responsiveness */

@@ -1,0 +1,8 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fundo -->
+  <rect width="120" height="120" rx="24" fill="#527a94"></rect>
+  
+  <!-- Lupa -->
+  <circle cx="55" cy="55" r="25" stroke="white" stroke-width="8" fill="none"></circle>
+  <line x1="75" y1="75" x2="100" y2="100" stroke="white" stroke-width="8" stroke-linecap="round"></line>
+</svg>
