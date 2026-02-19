@@ -12,10 +12,13 @@ export interface Product {
   link: string;
   marca: string;
   opiniao_consulta: string;
+  idade: string;
+  idade2: string;
+  idade3: string;
 }
 
 class ProductService {
-  private csvUrl: string = 'https://docs.google.com/spreadsheets/d/1btIezyZKBgMJpLwQ6xyZ2_zqkeo6p6Yv9i3Zei7WviI/export?format=csv';
+  private csvUrl: string = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSZXf5UJrfmtwIh_nsSSpngxX8RlxhIWyZzYnjKkz-SiXGiiWPIPoCuTzS3C37QOKlO04bFu0joxT8Q/pub?output=csv';
 
   async fetchProducts(): Promise<Product[]> {
     try {
@@ -65,7 +68,10 @@ class ProductService {
         opiniao: row.Opiniao || row.opiniao || row.Opinion || row.opinion || '',
         link: row.Link || row.link || row.URL || row.url || '',
         marca: row.Marca || row.marca || row.Brand || row.brand || '',
-        opiniao_consulta: row.opiniao_consulta || row.Opiniao_consulta || row.OPINIAO_CONSULTA || row['opiniao_consulta'] || ''
+        opiniao_consulta: row.opiniao_consulta || row.Opiniao_consulta || row.OPINIAO_CONSULTA || row['opiniao_consulta'] || '',
+        idade: row.idade || row.Idade || row.IDADE || '',
+        idade2: row.idade2 || row.Idade2 || row.IDADE2 || '',
+        idade3: row.idade3 || row.Idade3 || row.IDADE3 || ''
       };
       
       // Debug: Log the headers and opiniao_consulta value for first few products

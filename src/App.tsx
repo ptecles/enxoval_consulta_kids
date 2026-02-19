@@ -12,9 +12,11 @@ const App: React.FC = () => {
   const [brandOptions, setBrandOptions] = useState<string[]>([]);
   const [categoryOptions, setCategoryOptions] = useState<string[]>([]);
   const [subcategoryOptions, setSubcategoryOptions] = useState<string[]>([]);
+  const [ageOptions, setAgeOptions] = useState<string[]>([]);
   const [selectedBrand, setSelectedBrand] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>('');
+  const [selectedAge, setSelectedAge] = useState<string>('');
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileExpandedCategory, setMobileExpandedCategory] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
@@ -27,7 +29,7 @@ const App: React.FC = () => {
         const products = await ProductService.fetchProducts();
         setAllProducts(products);
         
-        // Extract unique brands and categories
+        // Extract unique brands, categories, and ages
         const uniqueBrands = Array.from(new Set(products
           .map(product => product.marca)
           .filter(brand => brand && brand.trim() !== '')
@@ -35,11 +37,21 @@ const App: React.FC = () => {
         
         const uniqueCategories = Array.from(new Set(products
           .map(product => product.category)
-          .filter(category => category && category.trim() !== '')
+          .filter(category => category && 
+            category.trim() !== '' && 
+            category.toLowerCase() !== 'categoria' && 
+            category.toLowerCase() !== 'uncategorized')
+          .sort()));
+        
+        // Extract unique ages from all three age columns, filtering out default "idade" values
+        const allAges = products.flatMap(product => [product.idade, product.idade2, product.idade3]);
+        const uniqueAges = Array.from(new Set(allAges
+          .filter(age => age && age.trim() !== '' && age.trim().toLowerCase() !== 'idade')
           .sort()));
         
         setBrandOptions(uniqueBrands);
         setCategoryOptions(uniqueCategories);
+        setAgeOptions(uniqueAges);
         // initialize subcategories empty until a category is chosen
         setSubcategoryOptions([]);
       } catch (err) {
@@ -53,12 +65,13 @@ const App: React.FC = () => {
     fetchProductData();
   }, []);
 
-  const handleSearch = (query: string, brandFilter?: string, categoryFilter?: string, subcategoryFilter?: string) => {
+  const handleSearch = (query: string, brandFilter?: string, categoryFilter?: string, subcategoryFilter?: string, ageFilter?: string) => {
     const currentBrand = brandFilter !== undefined ? brandFilter : selectedBrand;
     const currentCategory = categoryFilter !== undefined ? categoryFilter : selectedCategory;
     const currentSubcategory = subcategoryFilter !== undefined ? subcategoryFilter : selectedSubcategory;
+    const currentAge = ageFilter !== undefined ? ageFilter : selectedAge;
     
-    if (!query.trim() && !currentBrand && !currentCategory && !currentSubcategory) {
+    if (!query.trim() && !currentBrand && !currentCategory && !currentSubcategory && !currentAge) {
       setSearchResults([]);
       setHasSearched(false);
       return;
@@ -85,8 +98,14 @@ const App: React.FC = () => {
       // Subcategory filter (only if a category is selected; if not, ignore)
       const matchesSubcategory = !currentSubcategory || product.subcategory === currentSubcategory;
       
+      // Age filter - check if currentAge matches any of the three age fields
+      const matchesAge = !currentAge || 
+        product.idade === currentAge || 
+        product.idade2 === currentAge || 
+        product.idade3 === currentAge;
+      
       // Product must match all active filters
-      return matchesSearchQuery && matchesBrand && matchesCategory && matchesSubcategory;
+      return matchesSearchQuery && matchesBrand && matchesCategory && matchesSubcategory && matchesAge;
     });
     
     setSearchResults(filteredProducts);
@@ -107,7 +126,7 @@ const App: React.FC = () => {
             <span></span>
             <span></span>
           </button>
-          <h1 style={{
+          <h1 className="header-title" style={{
             color: '#527a94',
             fontSize: '28px',
             fontWeight: 'bold',
@@ -132,6 +151,7 @@ const App: React.FC = () => {
               setSelectedSubcategory('');
               setSubcategoryOptions([]);
               setSelectedBrand('');
+              setSelectedAge('');
               setSearchResults([]);
               setHasSearched(false);
               setOpenDropdown(null);
@@ -217,9 +237,8 @@ const App: React.FC = () => {
         </div>
       )}
       
-      {/* Mobile Menu Overlay - apenas quando houver busca ativa */}
-      {hasSearched && (
-        <div className={`mobile-menu-overlay ${isMobileMenuOpen ? 'active' : ''}`}>
+      {/* Mobile Menu Overlay */}
+      <div className={`mobile-menu-overlay ${isMobileMenuOpen ? 'active' : ''}`}>
         <div className="mobile-menu">
           <button 
             className={`mobile-menu-item ${!selectedCategory ? 'active' : ''}`}
@@ -228,6 +247,7 @@ const App: React.FC = () => {
               setSelectedSubcategory('');
               setSubcategoryOptions([]);
               setSelectedBrand('');
+              setSelectedAge('');
               setSearchResults([]);
               setHasSearched(false);
               setIsMobileMenuOpen(false);
@@ -314,7 +334,6 @@ const App: React.FC = () => {
           })}
         </div>
         </div>
-      )}
       <main className="App-main">
         {/* Mostrar conteúdo inicial apenas quando não há busca */}
         {!hasSearched && (
@@ -323,30 +342,19 @@ const App: React.FC = () => {
               <div className="age-group-content">
             <p>Veja os produtos por faixa etária</p>
             <div className="age-buttons-container">
-              <button 
-                className="age-button"
-                onClick={() => {
-                  handleSearch('6 a 12 meses');
-                }}
-              >
-                6 a 12 meses
-              </button>
-              <button 
-                className="age-button"
-                onClick={() => {
-                  handleSearch('1 a 2 anos');
-                }}
-              >
-                1 a 2 anos
-              </button>
-              <button 
-                className="age-button"
-                onClick={() => {
-                  handleSearch('2+ anos');
-                }}
-              >
-                2+ anos
-              </button>
+              {ageOptions.map((age) => (
+                <button 
+                  key={age}
+                  className={`age-button ${selectedAge === age ? 'active' : ''}`}
+                  onClick={() => {
+                    const newAge = age === selectedAge ? '' : age;
+                    setSelectedAge(newAge);
+                    handleSearch(document.querySelector<HTMLInputElement>('.search-input')?.value || '', selectedBrand, selectedCategory, selectedSubcategory, newAge);
+                  }}
+                >
+                  {age}
+                </button>
+              ))}
             </div>
           </div>
           <div className="age-group-image">
@@ -362,9 +370,9 @@ const App: React.FC = () => {
               { name: 'Vestuário', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2025/08/roupa_2.jpg' },
               { name: 'Higiene', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2026/01/Sabonete-liquido.jpg' }, 
               { name: 'Viagem', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2025/12/zap_aviao.jpg' },
-              { name: 'Passeio', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2025/09/cadeirinha_maxicosi.jpg' },
+              { name: 'Passeio', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2026/02/video_protetores-para-janela-carro.jpg' },
               { name: 'Alimentação', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2025/08/batalha-cadeiras.jpg' },
-              { name: 'Diversão', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2025/11/disney.jpg' },
+              { name: 'Diversão', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2026/02/ChatGPT-Image-Feb-19-2026-03_40_43-PM.png' },
               { name: 'Quarto', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2025/08/quarto-dos-meninos.jpg' },
               { name: 'Escola', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2025/08/mochila-felipe.jpg' }
             ].map((categoryData, index) => (
@@ -400,6 +408,8 @@ const App: React.FC = () => {
             </div>
             </div>
             
+            <div className="brands-section">
+            <p className="brands-intro-text">Explore por marca</p>
             <div className="brands-container">
           <div className="brands-scroll">
             {brandOptions.map((brand, index) => (
@@ -425,6 +435,7 @@ const App: React.FC = () => {
             ))}
           </div>
             </div>
+            </div>
           </>
         )}
         
@@ -446,12 +457,19 @@ const App: React.FC = () => {
                   <div className="product-info">
                     <h3>{product.name}</h3>
                     {product.marca && <p className="product-brand"><strong>Marca:</strong> {product.marca}</p>}
-                    <p className="product-category">Categoria: {product.category}{product.subcategory ? ` › ${product.subcategory}` : ''}</p>
                     {product.imageUrl && product.imageUrl !== 'https://via.placeholder.com/150' && (
                       <div className="product-image">
                         <img src={product.imageUrl} alt={product.name} />
                       </div>
                     )}
+                    {/* Age tags */}
+                    <div className="product-ages">
+                      {[product.idade, product.idade2, product.idade3]
+                        .filter(age => age && age.trim() !== '' && age.trim().toLowerCase() !== 'idade')
+                        .map((age, index) => (
+                          <span key={index} className="age-tag">{age}</span>
+                        ))}
+                    </div>
                     <p>{product.description}</p>
                     {product.opiniao && <p className="product-opinion"><strong>Opinião:</strong> {product.opiniao}</p>}
                     {product.opiniao_consulta && (
@@ -466,7 +484,7 @@ const App: React.FC = () => {
                         rel="noopener noreferrer"
                         className="product-link"
                       >
-                        Comprar na Amazon
+                        Ver na loja
                       </a>
                     ) : (
                       <button 
@@ -487,6 +505,9 @@ const App: React.FC = () => {
         <div className="footer-container">
           <div className="footer-logo">
             <img src="/images/logo.png" alt="Logo" className="logo-image" />
+          </div>
+          <div className="footer-disclaimer">
+            <p>O Enxoval Inteligente não realiza a venda dos produtos indicados neste site. As recomendações são apenas sugestões de compra, e ao clicar nos links, você será direcionado para lojas responsáveis pela venda, entrega e garantia dos produtos. O Enxoval Inteligente pode receber uma comissão pelas compras realizadas por meio desses links, sem nenhum custo extra para você.</p>
           </div>
           <div className="footer-copyright">
             <p>Copyright © 2025 Inc. Todos os direitos reservados. Edufe Digital CNPJ: 48.796.931/0001-74</p>
