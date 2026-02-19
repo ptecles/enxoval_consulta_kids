@@ -162,6 +162,15 @@ const App: React.FC = () => {
             setSelectedSubcategory('');
             setSelectedAge('');
             
+            // IMPORTANT: Force clean URL when going to home state
+            console.log('🧹 Cleaning URL to remove all parameters');
+            try {
+              window.history.replaceState({}, '', window.location.pathname);
+              console.log('✅ URL cleaned:', window.location.href);
+            } catch (err) {
+              console.error('❌ Failed to clean URL:', err);
+            }
+            
             console.log('🏠 Home state applied');
           }
         }, 50); // Longer delay for mobile
