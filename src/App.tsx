@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import SearchBar from './components/SearchBar';
 import ProductService, { Product } from './services/ProductService';
@@ -16,7 +16,7 @@ const App: React.FC = () => {
     };
   };
 
-  const updateURL = (query: string, brand: string, category: string, subcategory: string, age: string) => {
+  const updateURL = useCallback((query: string, brand: string, category: string, subcategory: string, age: string) => {
     const params = new URLSearchParams();
     if (query) params.set('q', query);
     if (brand) params.set('brand', brand);
@@ -26,7 +26,7 @@ const App: React.FC = () => {
     
     const newURL = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
     window.history.pushState({}, '', newURL);
-  };
+  }, []);
 
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [searchResults, setSearchResults] = useState<Product[]>([]);
@@ -44,6 +44,61 @@ const App: React.FC = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileExpandedCategory, setMobileExpandedCategory] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+
+  // Define handleSearch before useEffect to avoid hoisting issues
+  const handleSearch = useCallback((query: string, brandFilter?: string, categoryFilter?: string, subcategoryFilter?: string, ageFilter?: string) => {
+    const currentBrand = brandFilter !== undefined ? brandFilter : selectedBrand;
+    const currentCategory = categoryFilter !== undefined ? categoryFilter : selectedCategory;
+    const currentSubcategory = subcategoryFilter !== undefined ? subcategoryFilter : selectedSubcategory;
+    const currentAge = ageFilter !== undefined ? ageFilter : selectedAge;
+    
+    // Update URL with current filters (but don't break anything)
+    try {
+      updateURL(query, currentBrand, currentCategory, currentSubcategory, currentAge);
+    } catch (err) {
+      console.log('URL update failed:', err);
+    }
+    
+    if (!query.trim() && !currentBrand && !currentCategory && !currentSubcategory && !currentAge) {
+      setSearchResults([]);
+      setHasSearched(false);
+      return;
+    }
+
+    // Split the search query into individual words
+    const searchWords = query.toLowerCase().split(/\s+/).filter(word => word.length > 0);
+    
+    // Apply all filters: search query, brand, category, and subcategory
+    const filteredProducts = allProducts.filter((product: Product) => {
+      // Text search filter
+      const productName = product.name.toLowerCase();
+      const productBrand = product.marca.toLowerCase();
+      const matchesSearchQuery = searchWords.length === 0 || searchWords.some(word => 
+        productName.includes(word) || productBrand.includes(word)
+      );
+      
+      // Brand filter
+      const matchesBrand = !currentBrand || product.marca === currentBrand;
+      
+      // Category filter
+      const matchesCategory = !currentCategory || product.category === currentCategory;
+
+      // Subcategory filter (only if a category is selected; if not, ignore)
+      const matchesSubcategory = !currentSubcategory || product.subcategory === currentSubcategory;
+      
+      // Age filter - check if currentAge matches any of the three age fields
+      const matchesAge = !currentAge || 
+        product.idade === currentAge || 
+        product.idade2 === currentAge || 
+        product.idade3 === currentAge;
+      
+      // Product must match all active filters
+      return matchesSearchQuery && matchesBrand && matchesCategory && matchesSubcategory && matchesAge;
+    });
+    
+    setSearchResults(filteredProducts);
+    setHasSearched(true);
+  }, [allProducts, selectedBrand, selectedCategory, selectedSubcategory, selectedAge, updateURL]);
 
   // Handle browser back/forward navigation
   useEffect(() => {
@@ -104,7 +159,7 @@ const App: React.FC = () => {
       window.removeEventListener('popstate', handlePopState);
       window.removeEventListener('hashchange', handleHashChange);
     };
-  }, []);
+  }, [handleSearch]);
 
   // Fetch products from Google Sheets when component mounts
   useEffect(() => {
@@ -149,60 +204,6 @@ const App: React.FC = () => {
 
     fetchProductData();
   }, []);
-
-  const handleSearch = (query: string, brandFilter?: string, categoryFilter?: string, subcategoryFilter?: string, ageFilter?: string) => {
-    const currentBrand = brandFilter !== undefined ? brandFilter : selectedBrand;
-    const currentCategory = categoryFilter !== undefined ? categoryFilter : selectedCategory;
-    const currentSubcategory = subcategoryFilter !== undefined ? subcategoryFilter : selectedSubcategory;
-    const currentAge = ageFilter !== undefined ? ageFilter : selectedAge;
-    
-    // Update URL with current filters (but don't break anything)
-    try {
-      updateURL(query, currentBrand, currentCategory, currentSubcategory, currentAge);
-    } catch (err) {
-      console.log('URL update failed:', err);
-    }
-    
-    if (!query.trim() && !currentBrand && !currentCategory && !currentSubcategory && !currentAge) {
-      setSearchResults([]);
-      setHasSearched(false);
-      return;
-    }
-
-    // Split the search query into individual words
-    const searchWords = query.toLowerCase().split(/\s+/).filter(word => word.length > 0);
-    
-    // Apply all filters: search query, brand, category, and subcategory
-    const filteredProducts = allProducts.filter((product: Product) => {
-      // Text search filter
-      const productName = product.name.toLowerCase();
-      const productBrand = product.marca.toLowerCase();
-      const matchesSearchQuery = searchWords.length === 0 || searchWords.some(word => 
-        productName.includes(word) || productBrand.includes(word)
-      );
-      
-      // Brand filter
-      const matchesBrand = !currentBrand || product.marca === currentBrand;
-      
-      // Category filter
-      const matchesCategory = !currentCategory || product.category === currentCategory;
-
-      // Subcategory filter (only if a category is selected; if not, ignore)
-      const matchesSubcategory = !currentSubcategory || product.subcategory === currentSubcategory;
-      
-      // Age filter - check if currentAge matches any of the three age fields
-      const matchesAge = !currentAge || 
-        product.idade === currentAge || 
-        product.idade2 === currentAge || 
-        product.idade3 === currentAge;
-      
-      // Product must match all active filters
-      return matchesSearchQuery && matchesBrand && matchesCategory && matchesSubcategory && matchesAge;
-    });
-    
-    setSearchResults(filteredProducts);
-    setHasSearched(true);
-  };
 
 
 
