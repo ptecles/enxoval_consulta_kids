@@ -47,36 +47,63 @@ const App: React.FC = () => {
 
   // Handle browser back/forward navigation
   useEffect(() => {
-    const handlePopState = () => {
+    const handlePopState = (event: PopStateEvent) => {
+      console.log('🔄 PopState event triggered!', event);
+      console.log('📱 User agent:', navigator.userAgent);
+      console.log('🔗 Current URL:', window.location.href);
+      
       try {
         const urlFilters = getFiltersFromURL();
+        console.log('📋 URL Filters:', urlFilters);
         
-        // Update state to match URL
-        setSelectedBrand(urlFilters.brand);
-        setSelectedCategory(urlFilters.category);
-        setSelectedSubcategory(urlFilters.subcategory);
-        setSelectedAge(urlFilters.age);
+        // Force immediate state updates for mobile
+        setTimeout(() => {
+          console.log('⚡ Applying state updates...');
+          
+          // Update state to match URL
+          setSelectedBrand(urlFilters.brand);
+          setSelectedCategory(urlFilters.category);
+          setSelectedSubcategory(urlFilters.subcategory);
+          setSelectedAge(urlFilters.age);
+          
+          // Close mobile menu if open
+          setIsMobileMenuOpen(false);
+          setMobileExpandedCategory(null);
+          setOpenDropdown(null);
+          
+          // Apply search if there are filters
+          if (urlFilters.query || urlFilters.brand || urlFilters.category || urlFilters.subcategory || urlFilters.age) {
+            console.log('🔍 Applying search with filters');
+            setHasSearched(true);
+            handleSearch(urlFilters.query, urlFilters.brand, urlFilters.category, urlFilters.subcategory, urlFilters.age);
+          } else {
+            console.log('🏠 Clearing search, returning to home');
+            setHasSearched(false);
+            setSearchResults([]);
+          }
+        }, 50); // Longer delay for mobile
         
-        // Close mobile menu if open
-        setIsMobileMenuOpen(false);
-        setMobileExpandedCategory(null);
-        setOpenDropdown(null);
-        
-        // Apply search if there are filters
-        if (urlFilters.query || urlFilters.brand || urlFilters.category || urlFilters.subcategory || urlFilters.age) {
-          setHasSearched(true);
-          handleSearch(urlFilters.query, urlFilters.brand, urlFilters.category, urlFilters.subcategory, urlFilters.age);
-        } else {
-          setHasSearched(false);
-          setSearchResults([]);
-        }
       } catch (err) {
-        console.log('PopState error:', err);
+        console.error('❌ PopState error:', err);
       }
     };
 
+    // Also listen to hashchange for better mobile support
+    const handleHashChange = () => {
+      console.log('🔗 Hash change detected');
+      const syntheticEvent = new PopStateEvent('popstate', { state: null });
+      handlePopState(syntheticEvent);
+    };
+
+    console.log('🎯 Adding navigation listeners');
     window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
+    window.addEventListener('hashchange', handleHashChange);
+    
+    return () => {
+      console.log('🧹 Removing navigation listeners');
+      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('hashchange', handleHashChange);
+    };
   }, []);
 
   // Fetch products from Google Sheets when component mounts
