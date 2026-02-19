@@ -4,6 +4,30 @@ import SearchBar from './components/SearchBar';
 import ProductService, { Product } from './services/ProductService';
 
 const App: React.FC = () => {
+  // URL management utilities
+  const getFiltersFromURL = () => {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      query: params.get('q') || '',
+      brand: params.get('brand') || '',
+      category: params.get('category') || '',
+      subcategory: params.get('subcategory') || '',
+      age: params.get('age') || ''
+    };
+  };
+
+  const updateURL = (query: string, brand: string, category: string, subcategory: string, age: string) => {
+    const params = new URLSearchParams();
+    if (query) params.set('q', query);
+    if (brand) params.set('brand', brand);
+    if (category) params.set('category', category);
+    if (subcategory) params.set('subcategory', subcategory);
+    if (age) params.set('age', age);
+    
+    const newURL = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
+    window.history.pushState({}, '', newURL);
+  };
+
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -20,6 +44,40 @@ const App: React.FC = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileExpandedCategory, setMobileExpandedCategory] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+
+  // Handle browser back/forward navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      try {
+        const urlFilters = getFiltersFromURL();
+        
+        // Update state to match URL
+        setSelectedBrand(urlFilters.brand);
+        setSelectedCategory(urlFilters.category);
+        setSelectedSubcategory(urlFilters.subcategory);
+        setSelectedAge(urlFilters.age);
+        
+        // Close mobile menu if open
+        setIsMobileMenuOpen(false);
+        setMobileExpandedCategory(null);
+        setOpenDropdown(null);
+        
+        // Apply search if there are filters
+        if (urlFilters.query || urlFilters.brand || urlFilters.category || urlFilters.subcategory || urlFilters.age) {
+          setHasSearched(true);
+          handleSearch(urlFilters.query, urlFilters.brand, urlFilters.category, urlFilters.subcategory, urlFilters.age);
+        } else {
+          setHasSearched(false);
+          setSearchResults([]);
+        }
+      } catch (err) {
+        console.log('PopState error:', err);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   // Fetch products from Google Sheets when component mounts
   useEffect(() => {
@@ -70,6 +128,13 @@ const App: React.FC = () => {
     const currentCategory = categoryFilter !== undefined ? categoryFilter : selectedCategory;
     const currentSubcategory = subcategoryFilter !== undefined ? subcategoryFilter : selectedSubcategory;
     const currentAge = ageFilter !== undefined ? ageFilter : selectedAge;
+    
+    // Update URL with current filters (but don't break anything)
+    try {
+      updateURL(query, currentBrand, currentCategory, currentSubcategory, currentAge);
+    } catch (err) {
+      console.log('URL update failed:', err);
+    }
     
     if (!query.trim() && !currentBrand && !currentCategory && !currentSubcategory && !currentAge) {
       setSearchResults([]);
