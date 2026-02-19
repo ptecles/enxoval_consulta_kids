@@ -11,7 +11,7 @@ const App: React.FC = () => {
   const [hasSearched, setHasSearched] = useState<boolean>(false);
   const [brandOptions, setBrandOptions] = useState<string[]>([]);
   const [categoryOptions, setCategoryOptions] = useState<string[]>([]);
-  const [subcategoryOptions, setSubcategoryOptions] = useState<string[]>([]);
+  const [, setSubcategoryOptions] = useState<string[]>([]);
   const [ageOptions, setAgeOptions] = useState<string[]>([]);
   const [selectedBrand, setSelectedBrand] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
