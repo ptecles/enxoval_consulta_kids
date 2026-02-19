@@ -114,6 +114,13 @@ const App: React.FC = () => {
         // Force immediate state updates for mobile
         setTimeout(() => {
           console.log('⚡ Applying state updates...');
+          console.log('🧪 URL Filters debug:', {
+            query: `"${urlFilters.query}"`,
+            brand: `"${urlFilters.brand}"`,
+            category: `"${urlFilters.category}"`,
+            subcategory: `"${urlFilters.subcategory}"`,
+            age: `"${urlFilters.age}"`
+          });
           
           // Update state to match URL
           setSelectedBrand(urlFilters.brand);
@@ -126,15 +133,36 @@ const App: React.FC = () => {
           setMobileExpandedCategory(null);
           setOpenDropdown(null);
           
-          // Apply search if there are filters
-          if (urlFilters.query || urlFilters.brand || urlFilters.category || urlFilters.subcategory || urlFilters.age) {
+          // Check if we have any filters (more robust check)
+          const hasAnyFilter = !!(
+            (urlFilters.query && urlFilters.query.trim()) ||
+            (urlFilters.brand && urlFilters.brand.trim()) ||
+            (urlFilters.category && urlFilters.category.trim()) ||
+            (urlFilters.subcategory && urlFilters.subcategory.trim()) ||
+            (urlFilters.age && urlFilters.age.trim())
+          );
+          
+          console.log('🔍 Has any filter?', hasAnyFilter);
+          
+          if (hasAnyFilter) {
             console.log('🔍 Applying search with filters');
             setHasSearched(true);
             handleSearch(urlFilters.query, urlFilters.brand, urlFilters.category, urlFilters.subcategory, urlFilters.age);
           } else {
-            console.log('🏠 Clearing search, returning to home');
+            console.log('🏠 No filters detected - clearing search and returning to home');
+            console.log('🏠 Setting hasSearched: false, searchResults: []');
+            
+            // Force clear everything for home state
             setHasSearched(false);
             setSearchResults([]);
+            
+            // Also clear any selected states that might interfere
+            setSelectedBrand('');
+            setSelectedCategory('');
+            setSelectedSubcategory('');
+            setSelectedAge('');
+            
+            console.log('🏠 Home state applied');
           }
         }, 50); // Longer delay for mobile
         
