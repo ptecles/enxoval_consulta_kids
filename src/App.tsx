@@ -25,19 +25,7 @@ const App: React.FC = () => {
     if (age) params.set('age', age);
     
     const newURL = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
-    
-    // Debug logging for URL changes
-    console.log('📝 updateURL called with:', {
-      query, brand, category, subcategory, age
-    });
-    console.log('🔗 Current URL:', window.location.href);
-    console.log('🔗 New URL:', newURL);
-    console.log('📚 History length before:', window.history.length);
-    
     window.history.pushState({}, '', newURL);
-    
-    console.log('📚 History length after:', window.history.length);
-    console.log('✅ URL updated to:', window.location.href);
   }, []);
 
   const [allProducts, setAllProducts] = useState<Product[]>([]);
@@ -64,11 +52,11 @@ const App: React.FC = () => {
     const currentSubcategory = subcategoryFilter !== undefined ? subcategoryFilter : selectedSubcategory;
     const currentAge = ageFilter !== undefined ? ageFilter : selectedAge;
     
-    // Update URL with current filters (but don't break anything)
+    // Update URL with current filters
     try {
       updateURL(query, currentBrand, currentCategory, currentSubcategory, currentAge);
     } catch (err) {
-      console.log('URL update failed:', err);
+      console.error('URL update failed:', err);
     }
     
     if (!query.trim() && !currentBrand && !currentCategory && !currentSubcategory && !currentAge) {
@@ -115,25 +103,11 @@ const App: React.FC = () => {
   // Handle browser back/forward navigation
   useEffect(() => {
     const handlePopState = (event: PopStateEvent) => {
-      console.log('🔄 PopState event triggered!', event);
-      console.log('📱 User agent:', navigator.userAgent);
-      console.log('🔗 Current URL:', window.location.href);
-      
       try {
         const urlFilters = getFiltersFromURL();
-        console.log('📋 URL Filters:', urlFilters);
         
         // Force immediate state updates for mobile
         setTimeout(() => {
-          console.log('⚡ Applying state updates...');
-          console.log('🧪 URL Filters debug:', {
-            query: `"${urlFilters.query}"`,
-            brand: `"${urlFilters.brand}"`,
-            category: `"${urlFilters.category}"`,
-            subcategory: `"${urlFilters.subcategory}"`,
-            age: `"${urlFilters.age}"`
-          });
-          
           // Update state to match URL
           setSelectedBrand(urlFilters.brand);
           setSelectedCategory(urlFilters.category);
@@ -154,16 +128,10 @@ const App: React.FC = () => {
             (urlFilters.age && urlFilters.age.trim())
           );
           
-          console.log('🔍 Has any filter?', hasAnyFilter);
-          
           if (hasAnyFilter) {
-            console.log('🔍 Applying search with filters');
             setHasSearched(true);
             handleSearch(urlFilters.query, urlFilters.brand, urlFilters.category, urlFilters.subcategory, urlFilters.age);
           } else {
-            console.log('🏠 No filters detected - clearing search and returning to home');
-            console.log('🏠 Setting hasSearched: false, searchResults: []');
-            
             // Force clear everything for home state
             setHasSearched(false);
             setSearchResults([]);
@@ -175,36 +143,29 @@ const App: React.FC = () => {
             setSelectedAge('');
             
             // IMPORTANT: Force clean URL when going to home state
-            console.log('🧹 Cleaning URL to remove all parameters');
             try {
               window.history.replaceState({}, '', window.location.pathname);
-              console.log('✅ URL cleaned:', window.location.href);
             } catch (err) {
-              console.error('❌ Failed to clean URL:', err);
+              console.error('Failed to clean URL:', err);
             }
-            
-            console.log('🏠 Home state applied');
           }
         }, 50); // Longer delay for mobile
         
       } catch (err) {
-        console.error('❌ PopState error:', err);
+        console.error('PopState error:', err);
       }
     };
 
     // Also listen to hashchange for better mobile support
     const handleHashChange = () => {
-      console.log('🔗 Hash change detected');
       const syntheticEvent = new PopStateEvent('popstate', { state: null });
       handlePopState(syntheticEvent);
     };
 
-    console.log('🎯 Adding navigation listeners');
     window.addEventListener('popstate', handlePopState);
     window.addEventListener('hashchange', handleHashChange);
     
     return () => {
-      console.log('🧹 Removing navigation listeners');
       window.removeEventListener('popstate', handlePopState);
       window.removeEventListener('hashchange', handleHashChange);
     };
