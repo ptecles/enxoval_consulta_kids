@@ -25,7 +25,19 @@ const App: React.FC = () => {
     if (age) params.set('age', age);
     
     const newURL = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
+    
+    // Debug logging for URL changes
+    console.log('📝 updateURL called with:', {
+      query, brand, category, subcategory, age
+    });
+    console.log('🔗 Current URL:', window.location.href);
+    console.log('🔗 New URL:', newURL);
+    console.log('📚 History length before:', window.history.length);
+    
     window.history.pushState({}, '', newURL);
+    
+    console.log('📚 History length after:', window.history.length);
+    console.log('✅ URL updated to:', window.location.href);
   }, []);
 
   const [allProducts, setAllProducts] = useState<Product[]>([]);
