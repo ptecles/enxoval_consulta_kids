@@ -58,8 +58,9 @@ const Login: React.FC = () => {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'center',
-      padding: '20px'
+      justifyContent: 'flex-start',
+      padding: '20px',
+      paddingTop: '40px'
     }}>
       <style>{`
         @keyframes loginSlideUp {
@@ -112,7 +113,7 @@ const Login: React.FC = () => {
         <img
           src="https://enxovalinteligente.com.br/wp-content/uploads/2026/02/depois_do_enxoval_transparente.png"
           alt="Depois do Enxoval"
-          style={{ height: '70px', width: 'auto', objectFit: 'contain' }}
+          style={{ height: '110px', width: 'auto', objectFit: 'contain' }}
         />
       </div>
 
@@ -134,19 +135,6 @@ const Login: React.FC = () => {
           padding: '32px 36px 28px',
           textAlign: 'center'
         }}>
-          <div style={{
-            width: '52px',
-            height: '52px',
-            background: 'rgba(255,255,255,0.2)',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: '0 auto 16px',
-            fontSize: '22px'
-          }}>
-            🔒
-          </div>
           <h2 style={{
             margin: '0 0 8px',
             color: 'white',
