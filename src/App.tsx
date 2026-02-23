@@ -2,8 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import SearchBar from './components/SearchBar';
 import ProductService, { Product } from './services/ProductService';
+import Login from './components/Login';
+import { useAuth } from './contexts/AuthContext';
 
-const App: React.FC = () => {
+const AppContent: React.FC = () => {
+  const { isAuthenticated, isLoading: authLoading, user, logout } = useAuth();
+
   // URL management utilities
   const getFiltersFromURL = () => {
     const params = new URLSearchParams(window.location.search);
@@ -217,6 +221,21 @@ const App: React.FC = () => {
 
 
 
+  if (authLoading) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8f9fa' }}>
+        <div style={{ textAlign: 'center', color: '#638CA6', fontFamily: 'Georgia, serif' }}>
+          <div style={{ border: '3px solid #f3f3f3', borderTop: '3px solid #638CA6', borderRadius: '50%', width: '40px', height: '40px', animation: 'spin 1s linear infinite', margin: '0 auto 15px' }} />
+          Carregando...
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Login />;
+  }
+
   return (
     <div className="App">
       <header className="App-header-top">
@@ -229,18 +248,36 @@ const App: React.FC = () => {
             <span></span>
             <span></span>
           </button>
-          <h1 className="header-title" style={{
-            color: '#527a94',
-            fontSize: '28px',
-            fontWeight: 'bold',
-            fontStyle: 'italic',
-            margin: '0',
-            marginLeft: '15px',
-            fontFamily: 'serif'
-          }}>Depois do Enxoval</h1>
+          <img
+            src="https://enxovalinteligente.com.br/wp-content/uploads/2026/02/depois_do_enxoval_transparente.png"
+            alt="Depois do Enxoval"
+            className="header-logo-img"
+            style={{ height: '144px', width: 'auto', objectFit: 'contain', marginLeft: '0px', marginTop: '20px' }}
+          />
         </div>
         <div className="header-search">
           <SearchBar onSearch={handleSearch} />
+        </div>
+        <div className="header-right" style={{ display: 'flex', alignItems: 'center', gap: '10px', paddingRight: '15px' }}>
+          <span style={{ fontSize: '13px', color: '#666', fontFamily: 'Georgia, serif', whiteSpace: 'nowrap' }}>
+            👋 {user?.name || 'Usuária'}
+          </span>
+          <button
+            onClick={logout}
+            style={{
+              background: 'transparent',
+              border: '1px solid #D98C73',
+              color: '#D98C73',
+              padding: '5px 10px',
+              borderRadius: '6px',
+              fontSize: '13px',
+              cursor: 'pointer',
+              fontFamily: 'Georgia, serif',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            Sair
+          </button>
         </div>
       </header>
       {/* Menu de categorias - apenas quando houver busca ativa */}
@@ -435,6 +472,18 @@ const App: React.FC = () => {
               </div>
             );
           })}
+          <div style={{ marginTop: 'auto', paddingTop: '20px', borderTop: '1px solid #f0f0f0' }}>
+            <div style={{ padding: '10px 20px 5px', fontSize: '13px', color: '#999', fontFamily: 'Inter, sans-serif' }}>
+              👋 {user?.name || 'Usuária'}
+            </div>
+            <button
+              className="mobile-menu-item"
+              onClick={() => { setIsMobileMenuOpen(false); logout(); }}
+              style={{ color: '#D98C73', fontWeight: '600' }}
+            >
+              Sair
+            </button>
+          </div>
         </div>
         </div>
       <main className="App-main">
@@ -443,26 +492,26 @@ const App: React.FC = () => {
           <>
             <div className="age-group-container">
               <div className="age-group-content">
-            <p>Veja os produtos por faixa etária</p>
-            <div className="age-buttons-container">
-              {ageOptions.map((age) => (
-                <button 
-                  key={age}
-                  className={`age-button ${selectedAge === age ? 'active' : ''}`}
-                  onClick={() => {
-                    const newAge = age === selectedAge ? '' : age;
-                    setSelectedAge(newAge);
-                    handleSearch(document.querySelector<HTMLInputElement>('.search-input')?.value || '', selectedBrand, selectedCategory, selectedSubcategory, newAge);
-                  }}
-                >
-                  {age}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="age-group-image">
-            <img src="https://enxovalinteligente.com.br/wp-content/uploads/2026/02/Elisa_ensaiofamilia_017-1-1-1-1.jpg" alt="Elisa" />
-            </div>
+                <p>Veja os produtos por faixa etária</p>
+                <div className="age-buttons-container">
+                  {ageOptions.map((age) => (
+                    <button 
+                      key={age}
+                      className={`age-button ${selectedAge === age ? 'active' : ''}`}
+                      onClick={() => {
+                        const newAge = age === selectedAge ? '' : age;
+                        setSelectedAge(newAge);
+                        handleSearch(document.querySelector<HTMLInputElement>('.search-input')?.value || '', selectedBrand, selectedCategory, selectedSubcategory, newAge);
+                      }}
+                    >
+                      {age}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="age-group-image">
+                <img src="https://enxovalinteligente.com.br/wp-content/uploads/2026/02/Elisa_ensaiofamilia_017-1-1-1-1.jpg" alt="Elisa" />
+              </div>
             </div>
             
             <div className="categories-section">
@@ -619,6 +668,10 @@ const App: React.FC = () => {
       </footer>
     </div>
   );
+};
+
+const App: React.FC = () => {
+  return <AppContent />;
 };
 
 export default App;
