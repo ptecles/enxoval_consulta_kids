@@ -656,10 +656,10 @@ const AppContent: React.FC = () => {
       <footer className="footer">
         <div className="footer-container">
           <div className="footer-logo">
-            <img src="/images/logo.png" alt="Logo" className="logo-image" />
+            <img src="https://enxovalinteligente.com.br/wp-content/uploads/2026/02/depois_do_enxoval_transparente.png" alt="Logo" className="logo-image" />
           </div>
           <div className="footer-disclaimer">
-            <p>O Enxoval Inteligente não realiza a venda dos produtos indicados neste site. As recomendações são apenas sugestões de compra, e ao clicar nos links, você será direcionado para lojas responsáveis pela venda, entrega e garantia dos produtos. O Enxoval Inteligente pode receber uma comissão pelas compras realizadas por meio desses links, sem nenhum custo extra para você.</p>
+            <p>O Depois do Enxoval não realiza a venda dos produtos indicados neste site. As recomendações são apenas sugestões de compra, e ao clicar nos links, você será direcionado para lojas responsáveis pela venda, entrega e garantia dos produtos. O Depois do Enxoval pode receber uma comissão pelas compras realizadas por meio desses links, sem nenhum custo extra para você.</p>
           </div>
           <div className="footer-copyright">
             <p>Copyright © 2025 Inc. Todos os direitos reservados. Edufe Digital CNPJ: 48.796.931/0001-74</p>
