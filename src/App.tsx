@@ -494,7 +494,14 @@ const AppContent: React.FC = () => {
               <div className="age-group-content">
                 <p>Veja os produtos por faixa etária</p>
                 <div className="age-buttons-container">
-                  {ageOptions.map((age) => (
+                  {(() => {
+                    const desiredOrder = ['6 a 12 meses', '1 a 2 anos', '2+ anos'];
+                    const orderedAges = desiredOrder
+                      .filter((age) => ageOptions.includes(age))
+                      .concat(ageOptions.filter((age) => !desiredOrder.includes(age)));
+
+                    return orderedAges;
+                  })().map((age) => (
                     <button 
                       key={age}
                       className={`age-button ${selectedAge === age ? 'active' : ''}`}

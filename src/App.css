@@ -294,6 +294,7 @@ body {
   max-width: 700px;
   margin: 0 auto;
   padding: 0 200px;
+  transform: translateX(2cm);
 }
 
 .header-search .search-bar {
@@ -467,7 +468,7 @@ body {
 }
 
 .age-button {
-  background-color: black;
+  background-color: #5D7C91;
   color: white;
   border: none;
   padding: 12px 24px;
@@ -481,9 +482,17 @@ body {
 }
 
 .age-button:hover {
-  background-color: #333;
+  background-color: #6F8EA3;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.age-button.active {
+  background-color: #86A2B4;
+}
+
+.age-button.active:hover {
+  background-color: #86A2B4;
 }
 
 .age-group-image {
@@ -1108,6 +1117,7 @@ body {
     max-width: none;
     padding: 0;
     margin: 0;
+    transform: none;
   }
   
   /* Mobile search container */
