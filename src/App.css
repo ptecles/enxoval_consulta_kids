@@ -38,6 +38,16 @@ body {
   z-index: 10;
 }
 
+.header-logo-button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.header-logo-button:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
 .mobile-menu-toggle {
   display: none;
   background: none;

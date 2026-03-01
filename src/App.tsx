@@ -49,6 +49,30 @@ const AppContent: React.FC = () => {
   const [mobileExpandedCategory, setMobileExpandedCategory] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
+  const goHome = useCallback(() => {
+    setSelectedCategory('');
+    setSelectedSubcategory('');
+    setSubcategoryOptions([]);
+    setSelectedBrand('');
+    setSelectedAge('');
+    setSearchResults([]);
+    setHasSearched(false);
+    setIsMobileMenuOpen(false);
+    setMobileExpandedCategory(null);
+    setOpenDropdown(null);
+
+    const searchInput = document.querySelector<HTMLInputElement>('.search-input');
+    if (searchInput) {
+      searchInput.value = '';
+    }
+
+    try {
+      window.history.replaceState({}, '', window.location.pathname);
+    } catch (err) {
+      console.error('Failed to clean URL:', err);
+    }
+  }, []);
+
   // Define handleSearch before useEffect to avoid hoisting issues
   const handleSearch = useCallback((query: string, brandFilter?: string, categoryFilter?: string, subcategoryFilter?: string, ageFilter?: string) => {
     const currentBrand = brandFilter !== undefined ? brandFilter : selectedBrand;
@@ -248,12 +272,20 @@ const AppContent: React.FC = () => {
             <span></span>
             <span></span>
           </button>
-          <img
-            src="https://enxovalinteligente.com.br/wp-content/uploads/2026/02/depois_do_enxoval_transparente.png"
-            alt="Depois do Enxoval"
-            className="header-logo-img"
-            style={{ height: '144px', width: 'auto', objectFit: 'contain', marginLeft: '0px', marginTop: '20px' }}
-          />
+          <button
+            type="button"
+            onClick={goHome}
+            aria-label="Ir para a Home"
+            className="header-logo-button"
+            style={{ background: 'transparent', border: 'none', padding: 0, cursor: 'pointer' }}
+          >
+            <img
+              src="https://enxovalinteligente.com.br/wp-content/uploads/2026/02/depois_do_enxoval_transparente.png"
+              alt="Depois do Enxoval"
+              className="header-logo-img"
+              style={{ height: '144px', width: 'auto', objectFit: 'contain', marginLeft: '0px', marginTop: '20px' }}
+            />
+          </button>
         </div>
         <div className="header-search">
           <SearchBar onSearch={handleSearch} />
