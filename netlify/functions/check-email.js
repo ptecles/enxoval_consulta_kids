@@ -6,6 +6,38 @@ let currentToken = {
   expires_at: null
 };
 
+function normalizeText(value) {
+  if (typeof value !== 'string') return '';
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+function getSaleProductName(sale) {
+  if (!sale || typeof sale !== 'object') return '';
+
+  const candidates = [
+    sale.product?.name,
+    sale.product_name,
+    sale.productName,
+    sale.offer?.name,
+    sale.offer_name,
+    sale.subscription?.plan?.name,
+    sale.subscription?.name
+  ];
+
+  for (const c of candidates) {
+    if (typeof c === 'string' && c.trim()) return c;
+  }
+  return '';
+}
+
+function shouldDebugAuth() {
+  return String(process.env.HOTMART_DEBUG_AUTH || '').toLowerCase() === 'true';
+}
+
 function makeRequest(options, postData) {
   return new Promise((resolve, reject) => {
     const req = https.request(options, (res) => {
@@ -132,34 +164,63 @@ exports.handler = async (event) => {
     const token = await getValidToken();
     const sales = await checkEmailInHotmart(trimmedEmail, token);
 
-    const emailExists = sales.length > 0;
+    const targetProductName = process.env.HOTMART_PRODUCT_NAME || 'Depois do Enxoval';
+    const normalizedTarget = normalizeText(targetProductName);
 
-    if (emailExists) {
+    const detectedProductNames = sales
+      .map((sale) => getSaleProductName(sale))
+      .filter((name) => typeof name === 'string' && name.trim());
+
+    const matchingSales = sales.filter((sale) => {
+      const productName = getSaleProductName(sale);
+      const normalizedProduct = normalizeText(productName);
+      return normalizedProduct.includes(normalizedTarget);
+    });
+
+    const emailAuthorizedForProduct = matchingSales.length > 0;
+
+    if (emailAuthorizedForProduct) {
       const userData = {
         email: trimmedEmail,
-        name: sales[0]?.buyer?.name || 'Usuário',
-        totalPurchases: sales.length,
-        lastPurchase: sales[0]?.purchase_date
+        name: matchingSales[0]?.buyer?.name || 'Usuário',
+        totalPurchases: matchingSales.length,
+        lastPurchase: matchingSales[0]?.purchase_date
       };
+
+      const debug = shouldDebugAuth()
+        ? {
+            requiredProduct: targetProductName,
+            detectedProducts: detectedProductNames.slice(0, 20)
+          }
+        : undefined;
 
       return {
         statusCode: 200,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           success: true,
-          message: 'Email encontrado na base da Hotmart',
+          message: `Email autorizado para o produto: ${targetProductName}`,
           user: userData,
-          authorized: true
+          authorized: true,
+          ...(debug ? { debug } : {})
         })
       };
     } else {
+      const debug = shouldDebugAuth()
+        ? {
+            requiredProduct: targetProductName,
+            detectedProducts: detectedProductNames.slice(0, 20)
+          }
+        : undefined;
+
       return {
         statusCode: 200,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           success: false,
-          message: 'Email não encontrado na base de clientes',
-          authorized: false
+          message: `Email não possui compra/assinatura do produto necessário: ${targetProductName}`,
+          authorized: false,
+          ...(debug ? { debug } : {})
         })
       };
     }
