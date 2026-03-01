@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './App.css';
 import SearchBar from './components/SearchBar';
 import ProductService, { Product } from './services/ProductService';
@@ -48,6 +48,17 @@ const AppContent: React.FC = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileExpandedCategory, setMobileExpandedCategory] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+
+  const categoriesScrollRef = useRef<HTMLDivElement | null>(null);
+  const brandsScrollRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollHorizontal = useCallback((ref: React.RefObject<HTMLDivElement | null>, direction: 'left' | 'right') => {
+    const el = ref.current;
+    if (!el) return;
+
+    const amount = Math.max(240, Math.floor(el.clientWidth * 0.8));
+    el.scrollBy({ left: direction === 'left' ? -amount : amount, behavior: 'smooth' });
+  }, []);
 
   const goHome = useCallback(() => {
     setSelectedCategory('');
@@ -556,7 +567,15 @@ const AppContent: React.FC = () => {
             <div className="categories-section">
           <p className="categories-intro-text">Pule direto para uma das categorias</p>
           <div className="categories-container">
-          <div className="categories-scroll">
+          <button
+            type="button"
+            className="scroll-arrow"
+            aria-label="Ver categorias anteriores"
+            onClick={() => scrollHorizontal(categoriesScrollRef, 'left')}
+          >
+            ‹
+          </button>
+          <div ref={categoriesScrollRef} className="categories-scroll">
             {[
               { name: 'Vestuário', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2025/08/roupa_2.jpg' },
               { name: 'Higiene', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2026/01/Sabonete-liquido.jpg' }, 
@@ -596,13 +615,29 @@ const AppContent: React.FC = () => {
               </div>
             ))}
           </div>
+          <button
+            type="button"
+            className="scroll-arrow"
+            aria-label="Ver próximas categorias"
+            onClick={() => scrollHorizontal(categoriesScrollRef, 'right')}
+          >
+            ›
+          </button>
             </div>
             </div>
             
             <div className="brands-section">
             <p className="brands-intro-text">Explore por marca</p>
             <div className="brands-container">
-          <div className="brands-scroll">
+          <button
+            type="button"
+            className="scroll-arrow"
+            aria-label="Ver marcas anteriores"
+            onClick={() => scrollHorizontal(brandsScrollRef, 'left')}
+          >
+            ‹
+          </button>
+          <div ref={brandsScrollRef} className="brands-scroll">
             {brandOptions.map((brand, index) => (
               <div 
                 key={brand}
@@ -625,6 +660,14 @@ const AppContent: React.FC = () => {
               </div>
             ))}
           </div>
+          <button
+            type="button"
+            className="scroll-arrow"
+            aria-label="Ver próximas marcas"
+            onClick={() => scrollHorizontal(brandsScrollRef, 'right')}
+          >
+            ›
+          </button>
             </div>
             </div>
           </>
@@ -640,6 +683,23 @@ const AppContent: React.FC = () => {
           </div>
         ) : (
           <div className="search-results">
+            {hasSearched && (selectedBrand || selectedAge) && (
+              <div className="results-filters">
+                <div className="results-filters-title">Filtrando por:</div>
+                <div className="results-filters-chips">
+                  {selectedAge && (
+                    <span className="results-filter-chip">
+                      <span className="results-filter-chip-label">Idade:</span> {selectedAge}
+                    </span>
+                  )}
+                  {selectedBrand && (
+                    <span className="results-filter-chip">
+                      <span className="results-filter-chip-label">Marca:</span> {selectedBrand}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
             {hasSearched && searchResults.length === 0 ? (
               <p className="no-results">Nenhum produto encontrado. Tente outra busca.</p>
             ) : (

@@ -616,6 +616,7 @@ body {
   padding: 20px 0;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  scroll-behavior: smooth;
 }
 
 .brands-scroll::-webkit-scrollbar {
@@ -658,27 +659,28 @@ body {
 }
 
 .scroll-arrow {
-  background-color: #e67e40;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 55px;
-  height: 55px;
+  background-color: rgba(99, 140, 166, 0.08);
+  color: #638ca6;
+  border: 1px solid rgba(99, 140, 166, 0.35);
+  border-radius: 999px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 28px;
-  font-weight: bold;
+  font-size: 22px;
+  font-weight: 600;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
   flex-shrink: 0;
 }
 
 .scroll-arrow:hover {
-  background-color: #c5682e;
-  transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background-color: rgba(99, 140, 166, 0.18);
+  border-color: rgba(99, 140, 166, 0.55);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
 .categories-scroll {
@@ -688,6 +690,7 @@ body {
   padding: 20px 0;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  scroll-behavior: smooth;
 }
 
 .categories-scroll::-webkit-scrollbar {
@@ -794,6 +797,61 @@ body {
   outline: none;
   border-color: #999;
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.search-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 30px;
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.results-filters {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 0 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(99, 140, 166, 0.08);
+  border: 1px solid rgba(99, 140, 166, 0.18);
+}
+
+.results-filters-title {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  color: #3f5566;
+  letter-spacing: 0.2px;
+}
+
+.results-filters-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.results-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(99, 140, 166, 0.25);
+  color: #3f5566;
+  font-size: 14px;
+}
+
+.results-filter-chip-label {
+  font-weight: 600;
+  color: #638ca6;
 }
 
 .product-grid {
@@ -1148,9 +1206,7 @@ body {
   }
   
   .scroll-arrow {
-    width: 35px;
-    height: 35px;
-    font-size: 18px;
+    display: none;
   }
   
   .brand-card {
