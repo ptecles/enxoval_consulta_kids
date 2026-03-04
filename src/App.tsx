@@ -49,8 +49,31 @@ const AppContent: React.FC = () => {
   const [mobileExpandedCategory, setMobileExpandedCategory] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
+  const closeDropdownTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const categoriesScrollRef = useRef<HTMLDivElement | null>(null);
   const brandsScrollRef = useRef<HTMLDivElement | null>(null);
+
+  const clearCloseDropdownTimeout = useCallback(() => {
+    if (closeDropdownTimeoutRef.current) {
+      clearTimeout(closeDropdownTimeoutRef.current);
+      closeDropdownTimeoutRef.current = null;
+    }
+  }, []);
+
+  const scheduleCloseDropdown = useCallback(() => {
+    clearCloseDropdownTimeout();
+    closeDropdownTimeoutRef.current = setTimeout(() => {
+      setOpenDropdown(null);
+      closeDropdownTimeoutRef.current = null;
+    }, 250);
+  }, [clearCloseDropdownTimeout]);
+
+  useEffect(() => {
+    return () => {
+      clearCloseDropdownTimeout();
+    };
+  }, [clearCloseDropdownTimeout]);
 
   const scrollHorizontal = useCallback((ref: React.RefObject<HTMLDivElement | null>, direction: 'left' | 'right') => {
     const el = ref.current;
@@ -357,8 +380,13 @@ const AppContent: React.FC = () => {
               <div 
                 key={category} 
                 className="category-dropdown-container"
-                onMouseEnter={() => categorySubcategories.length > 0 && setOpenDropdown(category)}
-                onMouseLeave={() => setOpenDropdown(null)}
+                onMouseEnter={() => {
+                  if (categorySubcategories.length > 0) {
+                    clearCloseDropdownTimeout();
+                    setOpenDropdown(category);
+                  }
+                }}
+                onMouseLeave={scheduleCloseDropdown}
               >
                 <button 
                   className={`category-btn ${selectedCategory === category ? 'active' : ''}`}
@@ -383,7 +411,11 @@ const AppContent: React.FC = () => {
                 </button>
                 
                 {openDropdown === category && categorySubcategories.length > 0 && (
-                  <div className="subcategory-dropdown">
+                  <div
+                    className="subcategory-dropdown"
+                    onMouseEnter={clearCloseDropdownTimeout}
+                    onMouseLeave={scheduleCloseDropdown}
+                  >
                     <button
                       className={`subcategory-item ${selectedCategory === category && !selectedSubcategory ? 'active' : ''}`}
                       onClick={() => {
@@ -576,14 +608,14 @@ const AppContent: React.FC = () => {
             ‹
           </button>
           <div ref={categoriesScrollRef} className="categories-scroll">
-            {[
+            {[ 
               { name: 'Vestuário', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2025/08/roupa_2.jpg' },
               { name: 'Higiene', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2026/01/Sabonete-liquido.jpg' }, 
               { name: 'Viagem', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2025/12/zap_aviao.jpg' },
               { name: 'Passeio', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2026/02/video_protetores-para-janela-carro.jpg' },
               { name: 'Alimentação', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2025/08/batalha-cadeiras.jpg' },
               { name: 'Diversão', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2026/02/ChatGPT-Image-Feb-19-2026-03_40_43-PM.png' },
-              { name: 'Quarto', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2025/08/quarto-dos-meninos.jpg' },
+              { name: 'Casa', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2025/08/quarto-dos-meninos.jpg' },
               { name: 'Escola', image: 'https://enxovalinteligente.com.br/wp-content/uploads/2025/08/mochila-felipe.jpg' }
             ].map((categoryData, index) => (
               <div 

@@ -393,8 +393,8 @@ body {
 }
 
 .category-btn.active {
-  background-color: black;
-  color: white;
+  background-color: transparent;
+  color: black;
 }
 
 .user-info {
