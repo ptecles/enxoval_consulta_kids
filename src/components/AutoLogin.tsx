@@ -11,20 +11,31 @@ export default function AutoLogin() {
 
     if (!authEmail) return;
 
+    console.log('[AutoLogin] Detectado auth_email:', authEmail);
     setIsChecking(true);
 
     async function performAutoLogin() {
       try {
         if (authEmail) {
-          await login(authEmail);
+          console.log('[AutoLogin] Tentando login com:', authEmail);
+          const result = await login(authEmail);
+          console.log('[AutoLogin] Resultado do login:', result);
 
-          // Remover o parâmetro da URL
-          const url = new URL(window.location.href);
-          url.searchParams.delete('auth_email');
-          window.history.replaceState({}, '', url.pathname + url.search);
+          if (result.success) {
+            // Remover o parâmetro da URL apenas se login foi bem-sucedido
+            const url = new URL(window.location.href);
+            url.searchParams.delete('auth_email');
+            window.history.replaceState({}, '', url.pathname + url.search);
+          } else {
+            console.error('[AutoLogin] Login falhou:', result.message);
+            // Remover parâmetro mesmo se falhou para não ficar em loop
+            const url = new URL(window.location.href);
+            url.searchParams.delete('auth_email');
+            window.history.replaceState({}, '', url.pathname + url.search);
+          }
         }
       } catch (error) {
-        console.error('Auto-login failed:', error);
+        console.error('[AutoLogin] Erro no auto-login:', error);
       } finally {
         setIsChecking(false);
       }
