@@ -164,63 +164,34 @@ exports.handler = async (event) => {
     const token = await getValidToken();
     const sales = await checkEmailInHotmart(trimmedEmail, token);
 
-    const targetProductName = process.env.HOTMART_PRODUCT_NAME || 'Depois do Enxoval';
-    const normalizedTarget = normalizeText(targetProductName);
+    const emailAuthorized = sales.length > 0;
 
-    const detectedProductNames = sales
-      .map((sale) => getSaleProductName(sale))
-      .filter((name) => typeof name === 'string' && name.trim());
-
-    const matchingSales = sales.filter((sale) => {
-      const productName = getSaleProductName(sale);
-      const normalizedProduct = normalizeText(productName);
-      return normalizedProduct.includes(normalizedTarget);
-    });
-
-    const emailAuthorizedForProduct = matchingSales.length > 0;
-
-    if (emailAuthorizedForProduct) {
+    if (emailAuthorized) {
       const userData = {
         email: trimmedEmail,
-        name: matchingSales[0]?.buyer?.name || 'Usuário',
-        totalPurchases: matchingSales.length,
-        lastPurchase: matchingSales[0]?.purchase_date
+        name: sales[0]?.buyer?.name || 'Usuária',
+        totalPurchases: sales.length,
+        lastPurchase: sales[0]?.purchase_date
       };
-
-      const debug = shouldDebugAuth()
-        ? {
-            requiredProduct: targetProductName,
-            detectedProducts: detectedProductNames.slice(0, 20)
-          }
-        : undefined;
 
       return {
         statusCode: 200,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           success: true,
-          message: `Email autorizado para o produto: ${targetProductName}`,
+          message: 'Email autorizado',
           user: userData,
-          authorized: true,
-          ...(debug ? { debug } : {})
+          authorized: true
         })
       };
     } else {
-      const debug = shouldDebugAuth()
-        ? {
-            requiredProduct: targetProductName,
-            detectedProducts: detectedProductNames.slice(0, 20)
-          }
-        : undefined;
-
       return {
         statusCode: 200,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           success: false,
-          message: `Email não possui compra/assinatura do produto necessário: ${targetProductName}`,
-          authorized: false,
-          ...(debug ? { debug } : {})
+          message: 'Email não encontrado na base de clientes',
+          authorized: false
         })
       };
     }
