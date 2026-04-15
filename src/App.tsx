@@ -3,6 +3,7 @@ import './App.css';
 import SearchBar from './components/SearchBar';
 import ProductService, { Product } from './services/ProductService';
 import Login from './components/Login';
+import AutoLogin from './components/AutoLogin';
 import { useAuth } from './contexts/AuthContext';
 
 const AppContent: React.FC = () => {
@@ -291,7 +292,12 @@ const AppContent: React.FC = () => {
   }
 
   if (!isAuthenticated) {
-    return <Login />;
+    return (
+      <>
+        <AutoLogin />
+        <Login />
+      </>
+    );
   }
 
   return (
