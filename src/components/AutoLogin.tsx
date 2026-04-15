@@ -11,6 +11,16 @@ export default function AutoLogin() {
 
     if (!authEmail) return;
 
+    // Se já está autenticado, apenas remove o parâmetro da URL
+    const alreadyAuthenticated = localStorage.getItem('authenticated') === 'true';
+    if (alreadyAuthenticated) {
+      console.log('[AutoLogin] Já autenticado, removendo parâmetro da URL');
+      const url = new URL(window.location.href);
+      url.searchParams.delete('auth_email');
+      window.history.replaceState({}, '', url.pathname + url.search);
+      return;
+    }
+
     console.log('[AutoLogin] Detectado auth_email:', authEmail);
     setIsChecking(true);
 
