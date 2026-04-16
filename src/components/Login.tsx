@@ -111,9 +111,9 @@ const Login: React.FC = () => {
         animation: 'loginSlideUp 0.5s ease-out'
       }}>
         <img
-          src="https://enxovalinteligente.com.br/wp-content/uploads/2026/02/depois_do_enxoval_transparente.png"
-          alt="Depois do Enxoval"
-          style={{ height: '110px', width: 'auto', objectFit: 'contain' }}
+          src="/images/logo.png"
+          alt="Enxoval Inteligente"
+          style={{ height: 'auto', width: 'auto', maxHeight: '110px', objectFit: 'contain' }}
         />
       </div>
 
@@ -275,7 +275,7 @@ const Login: React.FC = () => {
             fontFamily: 'Inter, sans-serif',
             lineHeight: 1.5
           }}>
-            Acesso restrito às alunas do Depois do Enxoval
+            Acesso restrito às alunas do Enxoval Inteligente
           </p>
         </div>
       </div>
