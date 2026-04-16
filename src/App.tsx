@@ -323,7 +323,7 @@ const AppContent: React.FC = () => {
               src="/images/logo-enxoval.png"
               alt="Enxoval Inteligente"
               className="header-logo-img"
-              style={{ height: '144px', width: 'auto', objectFit: 'contain', marginLeft: '0px', marginTop: '20px' }}
+              style={{ height: '72px', width: 'auto', objectFit: 'contain', marginLeft: '0px', marginTop: '20px' }}
             />
           </button>
         </div>
