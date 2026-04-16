@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
+// Updated: 2026-04-16
 const Login: React.FC = () => {
   const { login } = useAuth();
   const [email, setEmail] = useState('');
