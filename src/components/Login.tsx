@@ -112,7 +112,7 @@ const Login: React.FC = () => {
         animation: 'loginSlideUp 0.5s ease-out'
       }}>
         <img
-          src="/images/logo.png"
+          src="/images/logo-enxoval.png"
           alt="Enxoval Inteligente"
           style={{ height: 'auto', width: 'auto', maxHeight: '110px', objectFit: 'contain' }}
         />
