@@ -576,7 +576,7 @@ const AppContent: React.FC = () => {
                 <p>Veja os produtos por faixa etária</p>
                 <div className="age-buttons-container">
                   {(() => {
-                    const desiredOrder = ['6 a 12 meses', '1 a 2 anos', '2+ anos'];
+                    const desiredOrder = ['0 a 6 meses', '6 a 12 meses', '1 a 2 anos', '2+ anos'];
                     const orderedAges = desiredOrder
                       .filter((age) => ageOptions.includes(age))
                       .concat(ageOptions.filter((age) => !desiredOrder.includes(age)));
