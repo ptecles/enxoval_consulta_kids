@@ -15,6 +15,7 @@ export interface Product {
   idade: string;
   idade2: string;
   idade3: string;
+  idade4: string;
 }
 
 class ProductService {
@@ -71,7 +72,8 @@ class ProductService {
         opiniao_consulta: row.opiniao_consulta || row.Opiniao_consulta || row.OPINIAO_CONSULTA || row['opiniao_consulta'] || '',
         idade: row.idade || row.Idade || row.IDADE || '',
         idade2: row.idade2 || row.Idade2 || row.IDADE2 || '',
-        idade3: row.idade3 || row.Idade3 || row.IDADE3 || ''
+        idade3: row.idade3 || row.Idade3 || row.IDADE3 || '',
+        idade4: row.idade4 || row.Idade4 || row.IDADE4 || ''
       };
       
       // Debug: Log the headers and opiniao_consulta value for first few products

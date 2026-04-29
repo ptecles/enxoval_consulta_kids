@@ -149,11 +149,12 @@ const AppContent: React.FC = () => {
       // Subcategory filter (only if a category is selected; if not, ignore)
       const matchesSubcategory = !currentSubcategory || product.subcategory === currentSubcategory;
       
-      // Age filter - check if currentAge matches any of the three age fields
+      // Age filter - check if currentAge matches any of the four age fields
       const matchesAge = !currentAge || 
         product.idade === currentAge || 
         product.idade2 === currentAge || 
-        product.idade3 === currentAge;
+        product.idade3 === currentAge || 
+        product.idade4 === currentAge;
       
       // Product must match all active filters
       return matchesSearchQuery && matchesBrand && matchesCategory && matchesSubcategory && matchesAge;
@@ -256,8 +257,8 @@ const AppContent: React.FC = () => {
             category.toLowerCase() !== 'uncategorized')
           .sort()));
         
-        // Extract unique ages from all three age columns, filtering out default "idade" values
-        const allAges = products.flatMap(product => [product.idade, product.idade2, product.idade3]);
+        // Extract unique ages from all four age columns, filtering out default "idade" values
+        const allAges = products.flatMap(product => [product.idade, product.idade2, product.idade3, product.idade4]);
         const uniqueAges = Array.from(new Set(allAges
           .filter(age => age && age.trim() !== '' && age.trim().toLowerCase() !== 'idade')
           .sort()));
@@ -753,7 +754,7 @@ const AppContent: React.FC = () => {
                     )}
                     {/* Age tags */}
                     <div className="product-ages">
-                      {[product.idade, product.idade2, product.idade3]
+                      {[product.idade, product.idade2, product.idade3, product.idade4]
                         .filter(age => age && age.trim() !== '' && age.trim().toLowerCase() !== 'idade')
                         .map((age, index) => (
                           <span key={index} className="age-tag">{age}</span>
